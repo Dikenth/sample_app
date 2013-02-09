@@ -15,65 +15,90 @@
 require 'spec_helper'
 
 describe User do
-  before(:each) do
-    @attr = { 
-    	:nom => "Example User", 
-    	:email => "user@example.com",
-    	:password => "foobar",
-    	:password_confirmation => "foobar" 
-    }
-  end
+	before(:each) do
+	 @attr = { 
+	 	:nom => "Example User", 
+	 	:email => "user@example.com",
+	 	:date => "1989-12-12",
+	 	:poids => 60,
+	 	:poids_ideal => 52,
+	 	:fumeur => true,
+	 	:arret => false,
+	 	:password => "foobar",
+	 	:password_confirmation => "foobar" 
+	 }
+	end
 
-  it "devrait créer une nouvelle instance dotée des attributs valides" do
-    User.create!(@attr)
-  end
+	it "devrait créer une nouvelle instance dotée des attributs valides" do
+	 User.create!(@attr)
+	end
 
-  it "devrait exiger un nom" do
-    bad_guy = User.new(@attr.merge(:nom => ""))
-    bad_guy.should_not be_valid
-  end
-  
-  it "exige une adresse email" do
-    no_email_user = User.new(@attr.merge(:email => ""))
-    no_email_user.should_not be_valid
-  end
-  
-  it "devrait rejeter les noms trop longs" do
-    long_nom = "a" * 51
-    long_nom_user = User.new(@attr.merge(:nom => long_nom))
-    long_nom_user.should_not be_valid
-  end
-  
-  it "devrait accepter une adresse email valide" do
-    adresses = %w[user@foo.com THE_USER@foo.bar.org first.last@foo.jp]
-    adresses.each do |address|
-      valid_email_user = User.new(@attr.merge(:email => address))
-      valid_email_user.should be_valid
-    end
-  end
+	it "devrait exiger un nom" do
+	 bad_guy = User.new(@attr.merge(:nom => ""))
+	 bad_guy.should_not be_valid
+	end
 
-  it "devrait rejeter une adresse email invalide" do
-    adresses = %w[user@foo,com user_at_foo.org example.user@foo.]
-    adresses.each do |address|
-      invalid_email_user = User.new(@attr.merge(:email => address))
-      invalid_email_user.should_not be_valid
-    end
-  end
-  
-  it "devrait rejeter un email double" do
-    # Place un utilisateur avec un email donné dans la BD.
-    User.create!(@attr)
-    user_with_duplicate_email = User.new(@attr)
-    user_with_duplicate_email.should_not be_valid
-  end
-  
-  it "devrait rejeter une adresse email invalide jusqu'à la casse" do
-    upcased_email = @attr[:email].upcase
-    User.create!(@attr.merge(:email => upcased_email))
-    user_with_duplicate_email = User.new(@attr)
-    user_with_duplicate_email.should_not be_valid
-  end 
-  
+	it "exige une adresse email" do
+	 no_email_user = User.new(@attr.merge(:email => ""))
+	 no_email_user.should_not be_valid
+	end
+
+	it "devrait rejeter les noms trop longs" do
+	 long_nom = "a" * 51
+	 long_nom_user = User.new(@attr.merge(:nom => long_nom))
+	 long_nom_user.should_not be_valid
+	end
+
+	it "devrait accepter une adresse email valide" do
+	 adresses = %w[user@foo.com THE_USER@foo.bar.org first.last@foo.jp]
+	 adresses.each do |address|
+		valid_email_user = User.new(@attr.merge(:email => address))
+		valid_email_user.should be_valid
+	 end
+	end
+
+	it "devrait rejeter une adresse email invalide" do
+	 adresses = %w[user@foo,com user_at_foo.org example.user@foo.]
+	 adresses.each do |address|
+		invalid_email_user = User.new(@attr.merge(:email => address))
+		invalid_email_user.should_not be_valid
+	 end
+	end
+
+	it "devrait rejeter un email double" do
+	 # Place un utilisateur avec un email donné dans la BD.
+	 User.create!(@attr)
+	 user_with_duplicate_email = User.new(@attr)
+	 user_with_duplicate_email.should_not be_valid
+	end
+
+	it "devrait rejeter une adresse email invalide jusqu'à la casse" do
+	 upcased_email = @attr[:email].upcase
+	 User.create!(@attr.merge(:email => upcased_email))
+	 user_with_duplicate_email = User.new(@attr)
+	 user_with_duplicate_email.should_not be_valid
+	end
+
+	it "devrait exiger une date de naissance" do
+		User.new(@attr.merge(:date => "")).should_not be_valid
+	end
+	
+	it "devrait rejeter une date de naissance invalide" do
+	 dates = %w["1989_12-12" "1989/12-12" "12-12-1254"]
+	 dates.each do |dates|
+		invalid_date_user = User.new(@attr.merge(:date => dates))
+		invalid_date_user.should_not be_valid
+	 end
+	end
+
+	it "devrait exiger un poids" do
+		User.new(@attr.merge(:poids => nil)).should_not be_valid
+	end
+
+	it "devrait exiger un poids idéal" do
+		User.new(@attr.merge(:poids_ideal => nil)).should_not be_valid
+	end
+
   describe "password validations" do
 
     it "devrait exiger un mot de passe" do
@@ -142,6 +167,22 @@ describe User do
 		   end
     	end
   	end
+  	
+  	describe "test_poids method" do
+  	
+  		before(:each) do
+			@user = User.create!(@attr)
+		end
+  	
+		it "doit retourner true si le poids est superieur au poids idéal" do
+		  @user.test_poids?(@attr[:poids],40).should be_true
+		end    
+
+		it "doit retourner true si le poids est inferieur au poids idéal" do
+		  @user.test_poids?(@attr[:poids],100).should be_false
+		end 
+	end
+  	 	
 end
 
 

@@ -122,6 +122,12 @@ table.profile {
   margin-bottom: 0;
 }
 
+table.donnees{
+	width: 100%;
+  	margin-bottom: 0; 
+	border-spacing: 10px;
+}
+
 td.main {
   width: 70%;
   padding: 1em;
@@ -131,11 +137,17 @@ td.sidebar {
   width: 30%;
   padding: 1em;
   vertical-align: top;
-  background: #FBEFEF;
+  background: #E0F2F7;
+}
+
+td.donnee{
+  padding: 1em;
+  vertical-align: top;
+  background: #cff;
 }
 
 .profile img.gravatar {
-  border: 1px solid #999;
+  border: 1px solid #09c;
   margin-bottom: -15px;
 }
 

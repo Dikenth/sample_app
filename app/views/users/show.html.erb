@@ -10,5 +10,15 @@
       <strong>Nom</strong> <%= @user.nom %><br />
       <strong>URL</strong>  <%= link_to user_path(@user), @user %>
     </td>
-  </tr>
+  </tr>  
+</table>
+<br/>
+<br/>
+
+<table class="donnees">
+	<tr>
+	<td class="donnee round">Poids actuel : <%= @user.poids %></td>
+	<td class="donnee round">Poids idéal : <%= @user.poids_ideal %></td>
+	<td class="donnee round">Date de naissance : <%= @user.date %></td>
+	</tr>
 </table>
