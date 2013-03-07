@@ -20,12 +20,13 @@ describe User do
 	 	:nom => "Example User", 
 	 	:email => "user@example.com",
 	 	:date => "1989-12-12",
-	 	:poids => 60,
-	 	:poids_ideal => 52,
+	 	:poids => 70,
+	 	:poids_ideal => 60,
+	 	:taille => 170,
 	 	:fumeur => true,
 	 	:arret => false,
 	 	:password => "foobar",
-	 	:password_confirmation => "foobar" 
+	 	:password_confirmation => "foobar"
 	 }
 	end
 
@@ -175,12 +176,8 @@ describe User do
 		end
   	
 		it "doit retourner true si le poids est superieur au poids idéal" do
-		  @user.test_poids?(@attr[:password],40).should be_true
-		end    
-
-		it "doit retourner true si le poids est inferieur au poids idéal" do
-		  @user.test_poids?(@attr[:password],100).should be_false
-		end 
+		  @user.test_poids?.should be_true
+		end
 	end
   	 	
 end

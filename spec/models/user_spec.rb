@@ -20,12 +20,13 @@ describe User do
 	 	:nom => "Example User", 
 	 	:email => "user@example.com",
 	 	:date => "1989-12-12",
-	 	:poids => 60,
-	 	:poids_ideal => 52,
+	 	:poids => 70,
+	 	:poids_ideal => 60,
+	 	:taille => 170,
 	 	:fumeur => true,
 	 	:arret => false,
 	 	:password => "foobar",
-	 	:password_confirmation => "foobar" 
+	 	:password_confirmation => "foobar"
 	 }
 	end
 
@@ -97,6 +98,10 @@ describe User do
 
 	it "devrait exiger un poids idéal" do
 		User.new(@attr.merge(:poids_ideal => nil)).should_not be_valid
+	end
+	
+	it "devrait exiger une taille" do
+		User.new(@attr.merge(:taille => nil)).should_not be_valid
 	end
 
   describe "password validations" do
@@ -175,12 +180,8 @@ describe User do
 		end
   	
 		it "doit retourner true si le poids est superieur au poids idéal" do
-		  @user.test_poids?(@attr[:poids],40).should be_true
-		end    
-
-		it "doit retourner true si le poids est inferieur au poids idéal" do
-		  @user.test_poids?(@attr[:poids],100).should be_false
-		end 
+		  @user.test_poids?.should be_true
+		end
 	end
   	 	
 end

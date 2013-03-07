@@ -1,3 +1,6 @@
+#!/bin/env ruby
+#encoding: utf-8
+
 # == Schema Information
 #
 # Table name: users
@@ -10,8 +13,9 @@
 #
 require 'digest'
 class User < ActiveRecord::Base
+	
 	attr_accessor :password
-	attr_accessible :nom, :email, :password, :password_confirmation, :poids, :poids_ideal, :date
+	attr_accessible :id, :nom, :email, :password, :password_confirmation, :poids, :poids_ideal, :date, :taille, :fumeur, :aret
 	
 	email_regex = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
 	date_regex = /^(19|20)\d\d([- \.])(0[1-9]|1[012])\2(0[1-9]|[12][0-9]|3[01])$/i
@@ -25,8 +29,8 @@ class User < ActiveRecord::Base
                      
   	# Crée automatique l'attribut virtuel 'password_confirmation'.
   	validates :password, :presence     => true,
-                       :confirmation => true,
-                       :length       => { :within => 6..40 }
+                      	:confirmation => true,
+                      	:length       => { :within => 6..40 }
  	
  	validates :poids, :presence => true
  	
@@ -34,15 +38,64 @@ class User < ActiveRecord::Base
    
    validates :date, :presence => true,
    			 		  :format => { :with => date_regex}
+   			 		  
+   validates :taille, :presence => true
    
-	before_save :encrypt_password
+	before_save :encrypt_password,
+					:test_poids?
+	
+	def self.save_cv(upload,id)
+    name =  "cv.pdf"
+    
+    if File.exists?("public/uploads/" + id[0].to_s) == false
+    	Dir.mkdir("public/uploads/" + id[0].to_s)
+    end
+    
+    directory = "public/uploads/" + id[0].to_s
+    
+    if File.exists?("public/uploads/" + id[0].to_s+"/cv.pdf") == true
+    	File.delete("public/uploads/" + id[0].to_s+"/cv.pdf")
+    end
+    
+    # create the file path
+    path = File.join(directory, name)
+    # write the file
+    File.open(path, "wb") { |f| f.write(upload['datafile'].read) }
+  end
+	
+	def age
+		test = (Date.today - Date.parse(self.date)).to_i
+		test = test/365
+		return test
+	end
+	
+	def calcul_imc
+		poids = self.poids.to_f
+		taille = self.taille.to_f
+		imc = poids/((taille/100)*(taille/100))
+		return imc
+	end
+	
+	def test_poids?
+		if self.poids.to_i < self.poids_ideal.to_i
+			errors.add(:poids," : doit être supérieur au poids idéal")
+			return false
+		end
+		return true
+	end
+	
+	def self.authenticate(email, submitted_password)
+    user = find_by_email(email)
+    return nil  if user.nil?
+    return user if user.has_password?(submitted_password)
+  end
+
+  def self.authenticate_with_salt(id, cookie_salt)
+    user = find_by_id(id)
+    (user && user.salt == cookie_salt) ? user : nil
+  end
 	
 	# Retour true (vrai) si le mot de passe correspond.
-	
-	def test_poids?(poids,poids_ideal)
-		return false if poids < poids_ideal
-		return true if poids > poids_ideal
-	end
 	
 	def has_password?(password_soumis)
 		encrypted_password == encrypt(password_soumis)

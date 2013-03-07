@@ -15,10 +15,19 @@
 <br/>
 <br/>
 
-<table border="1" cellspacing="10">
+<table class="donnees">
 	<tr>
-	<td class="donnees round">Poids actuel : <%= @user.poids %></td>
-	<td class="donnees round">Poids idéal : <%= @user.poids_ideal %></td>
-	<td class="donnees round">Date de naissance : <%= @user.date %></td>
+		<td class="donnee round">Poids actuel : <%= @user.poids %></td>
+		<td class="donnee round">Poids idéal : <%= @user.poids_ideal %></td>
+		<td class="donnee round">Age : <%= @user.age %></td>
+		<td class="donnee round">Imc : <%= @user.calcul_imc %></td>
+		<td class="donnee round">CV : <%= link_to 'lien vers le cv','uploads/' + @user.id.to_s + '/cv.pdf'%> </td>
 	</tr>
 </table>
+
+<%= form_tag({:action => 'uploadFile'}, :multipart => true) do %>
+	<p><label for="upload_file">Sélectionnez votre CV</label> : 
+	<%= file_field 'upload', 'datafile' %></p>
+	<%= hidden_field 'id' , @user.id %>
+	<%= submit_tag "Upload" %>
+<% end %>

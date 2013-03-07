@@ -7,6 +7,7 @@ Factory.define :user do |user|
   user.password_confirmation "foobar"
   user.poids 60
   user.poids_ideal 52
+  user.taille 175
   user.fumeur true
   user.aret false
   user.date "1989-12-12"

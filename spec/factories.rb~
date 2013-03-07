@@ -9,5 +9,5 @@ Factory.define :user do |user|
   user.poids_ideal 52
   user.fumeur true
   user.aret false
-  user.date "1989-12/12"
+  user.date "1989-12-12"
 end
