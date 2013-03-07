@@ -2,10 +2,41 @@ class UsersController < ApplicationController
   
   def show
     @user = User.find(params[:id])
+    @titre = @user.nom
   end
   
   def new
+  	@user = User.new
   	@titre = "Inscription"
   end
+  
+  def create
+    @user = User.new(params[:user])
+    if @user.save
+    	sign_in @user
+    	flash[:success] = "Bienvenue dans l'Application Exemple!"
+    	redirect_to @user
+      # Traite un succès d'enregistrement.
+    else
+      @titre = "Inscription"
+      render 'new'
+    end
+  end
+  
+	def uploadFile
+    post = User.save_cv(params[:upload], params[:id].keys)
+    @user = User.find(params[:id].keys)
+    redirect_to @user
+  end
+  
+  def self.authenticate(email, submitted_password)
+    user = find_by_email(email)
+    return nil  if user.nil?
+    return user if user.has_password?(submitted_password)
+  end
 
+  def self.authenticate_with_salt(id, cookie_salt)
+    user = find_by_id(id)
+    (user && user.salt == cookie_salt) ? user : nil
+  end
 end
