@@ -34,7 +34,7 @@
 	 <%= f.label :taille, "Taille (en cm)" %><br />
 	 <%= f.text_field :taille %>
 	</div>
-	<div class="fumeur">
+	<div class="field">
 	 <span><%= f.label :fumeur, "fumeur ?" %><%= f.check_box :fumeur %></span>
 	 <span id="hid"><%= f.label :aret, "j'aimerais arêter ?" %><%= f.check_box :aret %></span>
 	</div>

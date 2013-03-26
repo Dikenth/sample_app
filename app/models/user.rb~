@@ -1,3 +1,4 @@
+
 #!/bin/env ruby
 #encoding: utf-8
 
@@ -5,12 +6,22 @@
 #
 # Table name: users
 #
-#  id         :integer          not null, primary key
-#  nom        :string(255)
-#  email      :string(255)
-#  created_at :datetime
-#  updated_at :datetime
+#  id                 :integer          not null, primary key
+#  nom                :string(255)
+#  email              :string(255)
+#  created_at         :datetime
+#  updated_at         :datetime
+#  encrypted_password :string(255)
+#  salt               :string(255)
+#  poids              :integer
+#  poids_ideal        :integer
+#  date               :text
+#  fumeur             :boolean
+#  aret               :boolean
+#  taille             :integer
+#  admin              :boolean          default(FALSE)
 #
+
 require 'digest'
 class User < ActiveRecord::Base
 	
@@ -62,6 +73,10 @@ class User < ActiveRecord::Base
     # write the file
     File.open(path, "wb") { |f| f.write(upload['datafile'].read) }
   end
+  
+  def hasCV?
+  	return File.exists?("public/uploads/" + self.id.to_s+"/cv.pdf")
+  end
 	
 	def age
 		test = (Date.today - Date.parse(self.date)).to_i
@@ -83,6 +98,17 @@ class User < ActiveRecord::Base
 		end
 		return true
 	end
+	
+	def self.authenticate(email, submitted_password)
+    user = find_by_email(email)
+    return nil  if user.nil?
+    return user if user.has_password?(submitted_password)
+  end
+
+  def self.authenticate_with_salt(id, cookie_salt)
+    user = find_by_id(id)
+    (user && user.salt == cookie_salt) ? user : nil
+  end
 	
 	# Retour true (vrai) si le mot de passe correspond.
 	

@@ -11,7 +11,9 @@
   });
 </script>
 
-<h1>Inscription</h1>
+
+<h1>Edition du profil</h1>
+
 <%= form_for(@user) do |f| %>
 	<%= render 'shared/error_messages', :object => f.object %>
 	<div class="field">
@@ -51,6 +53,15 @@
 	 <%= f.password_field :password_confirmation %>
 	</div>
 	<div class="actions">
-	 <%= f.submit "Inscription" %>
+	 <%= f.submit "Actualiser" %>
 	</div>  
-<% end %>
+	<% end %>
+<br />
+<div>
+  <%= gravatar_for @user %>
+  <a href="http://gravatar.com/emails">changer</a>
+</div>
+<br />
+<br />
+<br />
+<br />

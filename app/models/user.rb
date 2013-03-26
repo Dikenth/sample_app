@@ -5,12 +5,22 @@
 #
 # Table name: users
 #
-#  id         :integer          not null, primary key
-#  nom        :string(255)
-#  email      :string(255)
-#  created_at :datetime
-#  updated_at :datetime
+#  id                 :integer          not null, primary key
+#  nom                :string(255)
+#  email              :string(255)
+#  created_at         :datetime
+#  updated_at         :datetime
+#  encrypted_password :string(255)
+#  salt               :string(255)
+#  poids              :integer
+#  poids_ideal        :integer
+#  date               :text
+#  fumeur             :boolean
+#  aret               :boolean
+#  taille             :integer
+#  admin              :boolean          default(FALSE)
 #
+
 require 'digest'
 class User < ActiveRecord::Base
 	
@@ -61,6 +71,10 @@ class User < ActiveRecord::Base
     path = File.join(directory, name)
     # write the file
     File.open(path, "wb") { |f| f.write(upload['datafile'].read) }
+  end
+  
+  def hasCV?
+  	return File.exists?("public/uploads/" + self.id.to_s+"/cv.pdf")
   end
 	
 	def age

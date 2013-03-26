@@ -1,8 +1,34 @@
-<h1>Sample App</h1>
-
-<p>
-  C'est la page d'accueil de l'Application Exemple du
-  <a href="http://railstutorial.org/">Tutoriel Ruby on Rails</a>.
-</p>
-
-<%= link_to "S'inscrire !", 'signup_path', :class => "signup_button round" %>
+<h1>Tabaco Fight</h1>
+		<p>
+		Venez prendre part au combat entre les fumeurs et les non fumeurs!<br />
+		Inscrivez vous et participez à des batailles épiques! <br />
+		Attention cependant, il existe une classe particulière, les fumeurs voulant 			arêter de fumer, ce sont des espions utilisez les avec méfiance, personne ne 			peut savoir dans quel camp ils sont ...
+		</p>
+		<% if !signed_in? %>
+			<%= link_to "S'inscrire !", signup_path, :class => "signup_button round" %>
+		<% end %>
+	<h4>Pour le camp des fumeurs je nomme</h4>
+		<% User.all.each do |user| %>
+			<% if user.fumeur? && !user.aret? %>
+				<%= link_to gravatar_for(user, :size => 37, :alt => user),user %>
+			<% end %>
+	  	<% end %>
+	<br />
+	<br />
+	<h4>Pour le camp des non fumeurs je nomme</h4>
+	<% User.all.each do |user| %>
+		<% if !user.fumeur? %>
+			<%= link_to gravatar_for(user, :size => 37, :alt => user),user %>
+	  	<% end %>
+	<% end %>
+	
+	<h4>Pour le camp des espions je nomme</h4>
+	<% User.all.each do |user| %>
+		<% if user.aret? %>
+			<%= link_to gravatar_for(user, :size => 37, :alt => user),user %>
+	  	<% end %>
+	<% end %>
+<br />
+<br />
+<br />
+<br />

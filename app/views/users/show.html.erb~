@@ -7,27 +7,26 @@
       </h1>
     </td>
     <td class="sidebar round">
+    	<strong>Camp</strong> <% if @user.fumeur? %> Fumeur <% else %> <% if @user.fumeur? && @user.aret? %> Epsion <% else %> Non Fumeur  <%end %><%end %><br />
       <strong>Nom</strong> <%= @user.nom %><br />
-      <strong>URL</strong>  <%= link_to user_path(@user), @user %>
+      <strong>URL</strong>  <%= link_to user_path(@user), @user %><br />
+      <strong>Poids actuel</strong> <%= @user.poids %><br />
+		<strong>Poids idéal</strong> <%= @user.poids_ideal %><br />
+		<strong>Age</strong> <%= @user.age %><br />
+		<strong>Imc</strong> <%= @user.calcul_imc %><br />
+		<% if @user.hasCV? %>
+		<strong>CV</strong> <%= link_to 'lien vers le cv','/uploads/' + @user.id.to_s + '/cv.pdf'%>
+		<% else %>
+			<strong>CV</strong> aucun CV uploadé
+		<% end %>
     </td>
   </tr>  
 </table>
-<br/>
-<br/>
 
-<table class="donnees">
-	<tr>
-		<td class="donnee round">Poids actuel : <%= @user.poids %></td>
-		<td class="donnee round">Poids idéal : <%= @user.poids_ideal %></td>
-		<td class="donnee round">Age : <%= @user.age %></td>
-		<td class="donnee round">Imc : <%= @user.calcul_imc %></td>
-		<td class="donnee round">CV : <%= link_to 'lien vers le cv','uploads/' + @user.id.to_s + '/cv.pdf'%> </td>
-	</tr>
-</table>
-
-<%= form_tag({:action => 'uploadFile'}, :multipart => true) do %>
-	<p><label for="upload_file">Sélectionnez votre CV</label> : 
-	<%= file_field 'upload', 'datafile' %></p>
-	<%= hidden_field 'id' , @user.id %>
-	<%= submit_tag "Upload" %>
+<% if signed_in? && current_user.nom == @user.nom %>
+	<%= form_tag({:action => 'uploadFile'}, :multipart => true) do %>
+		<p><label for="upload_file">Sélectionnez votre CV</label><br />
+		<%= file_field 'upload', 'datafile' %>
+		<%= hidden_field 'id' , @user.id %>	<%= submit_tag "Upload" %></p>
+	<% end %>
 <% end %>

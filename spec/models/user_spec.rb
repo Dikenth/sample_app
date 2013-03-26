@@ -5,11 +5,20 @@
 #
 # Table name: users
 #
-#  id         :integer          not null, primary key
-#  nom        :string(255)
-#  email      :string(255)
-#  created_at :datetime
-#  updated_at :datetime
+#  id                 :integer          not null, primary key
+#  nom                :string(255)
+#  email              :string(255)
+#  created_at         :datetime
+#  updated_at         :datetime
+#  encrypted_password :string(255)
+#  salt               :string(255)
+#  poids              :integer
+#  poids_ideal        :integer
+#  date               :text
+#  fumeur             :boolean
+#  aret               :boolean
+#  taille             :integer
+#  admin              :boolean          default(FALSE)
 #
 
 require 'spec_helper'
@@ -127,7 +136,7 @@ describe User do
       hash = @attr.merge(:password => long, :password_confirmation => long)
       User.new(hash).should_not be_valid
     end
-  end
+  end # password validations
   
   describe "password encryption" do
 
@@ -152,7 +161,7 @@ describe User do
 			it "doit retourner false si les mots de passe divergent" do
 			  @user.has_password?("invalide").should be_false
 			end 
-    	end
+    	end # methode has_password
     	
     	describe "authenticate method" do
 
@@ -170,8 +179,8 @@ describe User do
 		     matching_user = User.authenticate(@attr[:email], @attr[:password])
 		     matching_user.should == @user
 		   end
-    	end
-  	end
+    	end # authenticate method
+  	end # password encryption
   	
   	describe "test_poids method" do
   	
@@ -182,8 +191,27 @@ describe User do
 		it "doit retourner true si le poids est superieur au poids idéal" do
 		  @user.test_poids?.should be_true
 		end
-	end
+	end #test_poids
   	 	
+  describe "Attribut admin" do
+
+    before(:each) do
+      @user = User.create!(@attr)
+    end
+
+    it "devrait confirmer l'existence de `admin`" do
+      @user.should respond_to(:admin)
+    end
+
+    it "ne devrait pas être un administrateur par défaut" do
+      @user.should_not be_admin
+    end
+
+    it "devrait pouvoir devenir un administrateur" do
+      @user.toggle!(:admin)
+      @user.should be_admin
+    end
+  end # admin  
 end
 
 
